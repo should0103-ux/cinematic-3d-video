@@ -1,4 +1,4 @@
-name: Render cinematic MP4
+name: Cinematic 3D production pipeline
 on:
   workflow_dispatch:
 permissions:
@@ -7,23 +7,26 @@ permissions:
 jobs:
   render:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 360
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Install FFmpeg
-        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - name: Install Blender and FFmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y blender ffmpeg
+          blender --background --python scripts/blender_environment_check.py
       - name: Install project dependencies
         run: npm install
       - name: Install browser
         run: npx playwright install --with-deps chromium
-      - name: Render MP4
+      - name: Run existing pipeline smoke test (not final video)
         run: npm run render
-      - name: Upload final video
+      - name: Upload pipeline smoke test
         uses: actions/upload-artifact@v4
         with:
-          name: cinematic-video
+          name: pipeline-smoke-test
           path: output/cinematic-video.mp4
-          retention-days: 7
+          retention-days: 3
