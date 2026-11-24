@@ -24,7 +24,8 @@ scene.render.image_settings.file_format = "PNG"
 scene.render.film_transparent = False
 scene.render.image_settings.color_mode = "RGBA"
 scene.view_settings.view_transform = "AgX"
-if hasattr(scene, "eevee") and hasattr(scene.eevee, "taa_render_samples"):\n    scene.eevee.taa_render_samples = 64
+if hasattr(scene, "eevee") and hasattr(scene.eevee, "taa_render_samples"):
+    scene.eevee.taa_render_samples = 64
 
 def mat(name, color, metallic=0.0, rough=0.4, transmission=0.0):
     m = bpy.data.materials.new(name)
