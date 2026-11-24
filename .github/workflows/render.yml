@@ -12,23 +12,24 @@ jobs:
     timeout-minutes: 360
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
       - name: Install Blender and FFmpeg
         run: |
           sudo apt-get update
           sudo apt-get install -y blender ffmpeg
           blender --background --python scripts/blender_environment_check.py
-      - name: Install project dependencies
-        run: npm install
-      - name: Install browser
-        run: npx playwright install --with-deps chromium
-      - name: Run existing pipeline smoke test (not final video)
-        run: npm run render
-      - name: Upload pipeline smoke test
+      - name: Download free CC0 production assets
+        run: |
+          mkdir -p assets
+          curl -fL --retry 3 "https://files.innerscene.com/library/ant-5407c615/ab00cc85c25944f9f39c/ant.glb" -o assets/ant.glb
+          curl -fL --retry 3 "https://files.innerscene.com/library/laboratory-researcher-3d-person-healthcare-7a3ceb81/91ad770e07d2be3604e3/professional-lab-researcher.glb" -o assets/professional-lab-researcher.glb
+          ls -lh assets
+      - name: Build and render cinematic scene preview
+        run: blender --background --python scripts/build_scene.py
+      - name: Upload rendered preview and diagnostics
         uses: actions/upload-artifact@v4
         with:
-          name: pipeline-smoke-test
-          path: output/cinematic-video.mp4
-          retention-days: 3
+          name: researcher-ants-yogurt-preview
+          path: |
+            output/researcher_ants_yogurt_preview.mp4
+            output/researcher_ants_yogurt_preview.png
+          retention-days: 7
