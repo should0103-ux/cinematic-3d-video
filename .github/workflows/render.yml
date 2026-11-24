@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
-  actions: read
+  actions: write
 jobs:
   render:
     runs-on: ubuntu-latest
