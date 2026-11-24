@@ -1,6 +1,8 @@
 name: Cinematic 3D production pipeline
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
 permissions:
   contents: read
   actions: write
