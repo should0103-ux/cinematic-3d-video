@@ -1,7 +1,9 @@
 import bpy
 import sys
+import numpy
 print("BLENDER_ENVIRONMENT_OK")
 print("Blender version:", bpy.app.version_string)
+print("NumPy version:", numpy.__version__)
 print("Render engines available:", sorted({item.identifier for item in bpy.types.RenderSettings.bl_rna.properties["engine"].enum_items}))
 scene=bpy.context.scene
 scene.render.engine = "BLENDER_EEVEE" if "BLENDER_EEVEE" in {e.identifier for e in bpy.types.RenderSettings.bl_rna.properties["engine"].enum_items} else "CYCLES"
