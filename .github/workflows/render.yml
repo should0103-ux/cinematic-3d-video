@@ -1,39 +1,11 @@
-name: Cinematic 3D production pipeline
+name: Legacy Blender render (manual only)
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
 permissions:
   contents: read
   actions: write
 jobs:
-  render:
+  legacy:
     runs-on: ubuntu-latest
-    timeout-minutes: 360
     steps:
-      - uses: actions/checkout@v4
-      - name: Install Blender, FFmpeg and Blender GLB importer dependency
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y blender ffmpeg python3-numpy
-          blender --background --python scripts/blender_environment_check.py
-      - name: Download free CC0 production assets
-        run: |
-          mkdir -p assets
-          curl -fL --retry 3 "https://files.innerscene.com/library/ant-5407c615/ab00cc85c25944f9f39c/ant.glb" -o assets/ant.glb
-          curl -fL --retry 3 "https://files.innerscene.com/library/laboratory-researcher-3d-person-healthcare-7a3ceb81/91ad770e07d2be3604e3/professional-lab-researcher.glb" -o assets/professional-lab-researcher.glb
-          ls -lh assets
-      - name: Build and render cinematic scene preview
-        run: |
-          set -e
-          blender --background --python scripts/build_scene.py
-          test -s output/researcher_ants_yogurt_preview.png
-          test -s output/researcher_ants_yogurt_preview.mp4
-      - name: Upload rendered preview and diagnostics
-        uses: actions/upload-artifact@v4
-        with:
-          name: researcher-ants-yogurt-preview
-          path: |
-            output/researcher_ants_yogurt_preview.mp4
-            output/researcher_ants_yogurt_preview.png
-          retention-days: 7
+      - run: echo "Legacy Blender pipeline retained for rollback; Godot pipeline is the active test."
