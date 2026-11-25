@@ -7,6 +7,7 @@ var character: Node3D
 var animation_player: AnimationPlayer
 var ants: Array[Node3D] = []
 var caption: Label3D
+var camera: Camera3D
 
 func _ready() -> void:
     _setup_environment()
@@ -23,12 +24,12 @@ func _setup_environment() -> void:
     env.background_color = Color(0.012, 0.045, 0.075, 1.0)
     env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
     env.ambient_light_color = Color(0.50, 0.75, 0.90)
-    env.ambient_light_energy = 0.72
+    env.ambient_light_energy = 0.48
     env.tonemap_mode = Environment.TONE_MAPPER_FILMIC
     world.environment = env
     add_child(world)
 
-    var camera := Camera3D.new()
+    camera = Camera3D.new()
     camera.position = Vector3(0.0, 2.55, 6.6)
     camera.fov = 38.0
     add_child(camera)
@@ -38,21 +39,21 @@ func _setup_environment() -> void:
     var key := DirectionalLight3D.new()
     key.rotation_degrees = Vector3(-32.0, -28.0, 0.0)
     key.light_color = Color(0.66, 0.88, 1.0)
-    key.light_energy = 1.8
+    key.light_energy = 0.82
     key.shadow_enabled = true
     add_child(key)
 
     var fill := OmniLight3D.new()
     fill.position = Vector3(-3.2, 3.0, 2.7)
     fill.light_color = Color(0.12, 0.72, 1.0)
-    fill.light_energy = 2.0
+    fill.light_energy = 0.82
     fill.omni_range = 9.0
     add_child(fill)
 
     var rim := OmniLight3D.new()
     rim.position = Vector3(3.0, 2.7, -2.5)
     rim.light_color = Color(0.08, 0.42, 0.95)
-    rim.light_energy = 2.4
+    rim.light_energy = 1.05
     rim.omni_range = 8.0
     add_child(rim)
 
@@ -205,6 +206,12 @@ func _load_animated_character() -> void:
     print("Playing animation: ", selected_clip)
 
 func _make_ant() -> Node3D:
+    var ant_scene := load("res://assets/ant.glb") as PackedScene
+    if ant_scene != null:
+        var real_ant := ant_scene.instantiate() as Node3D
+        if real_ant != null:
+            real_ant.scale = Vector3.ONE * 0.12
+            return real_ant
     var ant := Node3D.new()
     var body_mat := StandardMaterial3D.new()
     body_mat.albedo_color = Color(0.16, 0.035, 0.018)
@@ -242,6 +249,34 @@ func _setup_caption() -> void:
 
 func _process(delta: float) -> void:
     elapsed += delta
+    var shot_position := Vector3(0.0, 2.55, 6.6)
+    var shot_target := Vector3(0.0, 1.45, 0.0)
+    if elapsed < 6.0:
+        caption.text = "A STRANGE SCIENCE EXPERIMENT"
+        shot_position = Vector3(0.0, 2.55, 6.6)
+        shot_target = Vector3(0.0, 1.45, 0.0)
+    elif elapsed < 12.0:
+        caption.text = "THE RESEARCHER PREPARES THE SAMPLE"
+        shot_position = Vector3(-1.55, 2.45, 4.8)
+        shot_target = Vector3(-0.82, 1.45, -0.72)
+    elif elapsed < 18.0:
+        caption.text = "A SPOONFUL OF YOGURT"
+        shot_position = Vector3(0.85, 2.1, 3.6)
+        shot_target = Vector3(0.72, 1.18, 0.56)
+    elif elapsed < 24.0:
+        caption.text = "ANTS APPROACH THE SAMPLE"
+        shot_position = Vector3(1.45, 1.85, 2.85)
+        shot_target = Vector3(0.72, 1.18, 0.56)
+    elif elapsed < 30.0:
+        caption.text = "THE EXPERIMENT TAKES A TURN"
+        shot_position = Vector3(-1.35, 2.4, 4.65)
+        shot_target = Vector3(-0.82, 1.5, -0.72)
+    else:
+        caption.text = "WHAT WILL THE ANTS DO?"
+        shot_position = Vector3(0.0, 2.6, 6.5)
+        shot_target = Vector3(0.0, 1.35, 0.0)
+    camera.position = camera.position.lerp(shot_position, min(delta * 2.0, 1.0))
+    camera.look_at(shot_target, Vector3.UP)
     if character != null:
         character.rotation.y = sin(elapsed * 0.45) * 0.08
     for i in range(ants.size()):
