@@ -76,13 +76,13 @@ jobs:
             --write-movie output/godot-final.avi \
             --quit-after 990
           test -s godot_project/output/godot-final.avi
-          ffmpeg -hide_banner -y -i godot_project/output/godot-test.avi \
+          ffmpeg -hide_banner -y -i godot_project/output/godot-final.avi \
             -an -c:v libx264 -preset medium -crf 20 \
             -pix_fmt yuv420p -movflags +faststart \
             godot_project/output/godot-final.mp4
           test -s godot_project/output/godot-final.mp4
           ffprobe -v error -show_entries format=duration,size \
-            -of default=noprint_wrappers=1 godot_project/output/godot-test.mp4
+            -of default=noprint_wrappers=1 godot_project/output/godot-final.mp4
 
       - name: Upload Godot test video
         uses: actions/upload-artifact@v4
