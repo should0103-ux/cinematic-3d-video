@@ -60,19 +60,19 @@ jobs:
       - name: Render 5-second portrait test
         run: |
           set -euo pipefail
-          mkdir -p output
+          mkdir -p godot_project/output
           xvfb-run -a "$GODOT_BIN" \
             --path godot_project \
             --rendering-method gl_compatibility \
             --audio-driver Dummy \
             --fixed-fps 30 \
-            --write-movie output/godot-test.avi \
+            --write-movie godot_project/output/godot-test.avi \
             --quit-after 150
-          test -s output/godot-test.avi
-          ffmpeg -hide_banner -y -i output/godot-test.avi \
+          test -s godot_project/output/godot-test.avi
+          ffmpeg -hide_banner -y -i godot_project/output/godot-test.avi \
             -an -c:v libx264 -preset medium -crf 20 \
             -pix_fmt yuv420p -movflags +faststart \
-            output/godot-test.mp4
+            godot_project/godot_project/output/godot-test.mp4
           test -s output/godot-test.mp4
           ffprobe -v error -show_entries format=duration,size \
             -of default=noprint_wrappers=1 output/godot-test.mp4
@@ -83,6 +83,6 @@ jobs:
           name: godot-animated-glb-test
           path: |
             output/godot-test.mp4
-            output/godot-test.avi
+            godot_project/output/godot-test.avi
           if-no-files-found: error
           retention-days: 7
