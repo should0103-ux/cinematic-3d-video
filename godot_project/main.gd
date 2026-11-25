@@ -29,10 +29,10 @@ func _setup_environment() -> void:
     add_child(world)
 
     var camera := Camera3D.new()
-    camera.position = Vector3(0.0, 2.25, 8.2)
+    camera.position = Vector3(0.0, 2.55, 6.6)
     camera.fov = 38.0
     add_child(camera)
-    camera.look_at(Vector3(0.0, 1.15, 0.0), Vector3.UP)
+    camera.look_at(Vector3(0.0, 1.45, 0.0), Vector3.UP)
     camera.current = true
 
     var key := DirectionalLight3D.new()
@@ -154,12 +154,17 @@ func _load_animated_character() -> void:
 
     var chosen := paths[0]
     for path in paths:
-        var lower := path.to_lower()
-        if "walk" in lower:
+        if "researcher" in path.to_lower():
             chosen = path
             break
-        if "idle" in lower:
-            chosen = path
+    if not "researcher" in chosen.to_lower():
+        for path in paths:
+            var lower := path.to_lower()
+            if "walk" in lower:
+                chosen = path
+                break
+            if "idle" in lower:
+                chosen = path
 
     print("Loading animated GLB: ", chosen)
     var packed := load(chosen) as PackedScene
@@ -171,9 +176,13 @@ func _load_animated_character() -> void:
     if character == null:
         push_error("GLB root is not Node3D: " + chosen)
         return
-    character.position = Vector3(-1.12, 0.0, -0.65)
-    character.scale = Vector3.ONE * 1.18
+    character.position = Vector3(-0.82, 0.0, -0.72)
+    character.scale = Vector3.ONE * 1.35
     add_child(character)
+
+    if "researcher" in chosen.to_lower():
+        print("Visible static researcher mesh loaded; animation pack import is separate")
+        return
 
     var players := character.find_children("*", "AnimationPlayer", true, false)
     if players.is_empty():
