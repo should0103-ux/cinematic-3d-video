@@ -24,7 +24,7 @@ func _setup_environment() -> void:
     env.background_color = Color(0.012, 0.045, 0.075, 1.0)
     env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
     env.ambient_light_color = Color(0.50, 0.75, 0.90)
-    env.ambient_light_energy = 0.48
+    env.ambient_light_energy = 0.28
     env.tonemap_mode = Environment.TONE_MAPPER_FILMIC
     world.environment = env
     add_child(world)
@@ -39,21 +39,21 @@ func _setup_environment() -> void:
     var key := DirectionalLight3D.new()
     key.rotation_degrees = Vector3(-32.0, -28.0, 0.0)
     key.light_color = Color(0.66, 0.88, 1.0)
-    key.light_energy = 0.82
+    key.light_energy = 0.42
     key.shadow_enabled = true
     add_child(key)
 
     var fill := OmniLight3D.new()
     fill.position = Vector3(-3.2, 3.0, 2.7)
     fill.light_color = Color(0.12, 0.72, 1.0)
-    fill.light_energy = 0.82
+    fill.light_energy = 0.42
     fill.omni_range = 9.0
     add_child(fill)
 
     var rim := OmniLight3D.new()
     rim.position = Vector3(3.0, 2.7, -2.5)
     rim.light_color = Color(0.08, 0.42, 0.95)
-    rim.light_energy = 1.05
+    rim.light_energy = 0.55
     rim.omni_range = 8.0
     add_child(rim)
 
@@ -206,20 +206,14 @@ func _load_animated_character() -> void:
     print("Playing animation: ", selected_clip)
 
 func _make_ant() -> Node3D:
-    var ant_scene := load("res://assets/ant.glb") as PackedScene
-    if ant_scene != null:
-        var real_ant := ant_scene.instantiate() as Node3D
-        if real_ant != null:
-            real_ant.scale = Vector3.ONE * 0.12
-            return real_ant
     var ant := Node3D.new()
     var body_mat := StandardMaterial3D.new()
-    body_mat.albedo_color = Color(0.16, 0.035, 0.018)
-    body_mat.roughness = 0.42
+    body_mat.albedo_color = Color(0.10, 0.018, 0.009)
+    body_mat.roughness = 0.34
     for item in [
-        {"p": Vector3(0.0, 0.0, 0.0), "r": 0.040},
-        {"p": Vector3(0.0, 0.0, 0.09), "r": 0.030},
-        {"p": Vector3(0.0, 0.0, -0.075), "r": 0.045}
+        {"p": Vector3(0.0, 0.0, 0.0), "r": 0.032},
+        {"p": Vector3(0.0, 0.0, 0.075), "r": 0.024},
+        {"p": Vector3(0.0, 0.0, -0.072), "r": 0.038}
     ]:
         var part := MeshInstance3D.new()
         var sphere := SphereMesh.new()
@@ -229,6 +223,19 @@ func _make_ant() -> Node3D:
         part.position = item["p"]
         part.set_surface_override_material(0, body_mat)
         ant.add_child(part)
+    for side in [-1.0, 1.0]:
+        for zpos in [-0.045, 0.0, 0.045]:
+            var leg := MeshInstance3D.new()
+            var leg_mesh := CylinderMesh.new()
+            leg_mesh.top_radius = 0.006
+            leg_mesh.bottom_radius = 0.008
+            leg_mesh.height = 0.105
+            leg.mesh = leg_mesh
+            leg.position = Vector3(side * 0.035, -0.035, zpos)
+            leg.rotation.z = side * 0.78
+            leg.rotation.x = 0.32 if zpos > 0.0 else -0.32
+            leg.set_surface_override_material(0, body_mat)
+            ant.add_child(leg)
     return ant
 
 func _setup_ants() -> void:
