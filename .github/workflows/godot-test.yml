@@ -89,7 +89,7 @@ jobs:
         with:
           name: godot-33-second-cinematic-video
           path: |
-            godot_project/output/godot-test.mp4
-            godot_project/output/godot-test.avi
+            godot_project/output/godot-final.mp4
+            godot_project/output/godot-final.avi
           if-no-files-found: error
           retention-days: 7
