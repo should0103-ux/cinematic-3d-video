@@ -31,8 +31,8 @@ func _setup_environment() -> void:
     var camera := Camera3D.new()
     camera.position = Vector3(0.0, 2.25, 8.2)
     camera.fov = 38.0
-    camera.look_at(Vector3(0.0, 1.15, 0.0), Vector3.UP)
     add_child(camera)
+    camera.look_at(Vector3(0.0, 1.15, 0.0), Vector3.UP)
     camera.current = true
 
     var key := DirectionalLight3D.new()
