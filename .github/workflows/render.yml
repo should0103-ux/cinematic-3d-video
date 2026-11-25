@@ -12,10 +12,10 @@ jobs:
     timeout-minutes: 360
     steps:
       - uses: actions/checkout@v4
-      - name: Install Blender and FFmpeg
+      - name: Install Blender, FFmpeg and Blender GLB importer dependency
         run: |
           sudo apt-get update
-          sudo apt-get install -y blender ffmpeg
+          sudo apt-get install -y blender ffmpeg python3-numpy
           blender --background --python scripts/blender_environment_check.py
       - name: Download free CC0 production assets
         run: |
