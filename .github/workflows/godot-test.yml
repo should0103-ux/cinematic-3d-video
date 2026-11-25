@@ -46,11 +46,10 @@ jobs:
             "https://github.com/Kinemiq/free-game-animations/releases/download/v1.0/KinemIQ_Free_Animations_CC0_GLB.zip" \
             -o /tmp/cc0-animations.zip
           unzip -q /tmp/cc0-animations.zip -d godot_project/assets
-          echo "Imported GLB files:"
           find godot_project/assets -type f -iname '*.glb' -print
           GLB_COUNT="$(find godot_project/assets -type f -iname '*.glb' | wc -l)"
           test "$GLB_COUNT" -gt 0
-          echo "GLB_COUNT=$GLB_COUNT" >> "$GITHUB_ENV"
+          echo "Imported $GLB_COUNT GLB files"
 
       - name: Import GLB assets and validate project
         run: |
@@ -66,23 +65,23 @@ jobs:
             --rendering-method gl_compatibility \
             --audio-driver Dummy \
             --fixed-fps 30 \
-            --write-movie godot_project/output/godot-test.avi \
+            --write-movie output/godot-test.avi \
             --quit-after 150
           test -s godot_project/output/godot-test.avi
           ffmpeg -hide_banner -y -i godot_project/output/godot-test.avi \
             -an -c:v libx264 -preset medium -crf 20 \
             -pix_fmt yuv420p -movflags +faststart \
-            godot_project/godot_project/output/godot-test.mp4
-          test -s output/godot-test.mp4
+            godot_project/output/godot-test.mp4
+          test -s godot_project/output/godot-test.mp4
           ffprobe -v error -show_entries format=duration,size \
-            -of default=noprint_wrappers=1 output/godot-test.mp4
+            -of default=noprint_wrappers=1 godot_project/output/godot-test.mp4
 
       - name: Upload Godot test video
         uses: actions/upload-artifact@v4
         with:
           name: godot-animated-glb-test
           path: |
-            output/godot-test.mp4
+            godot_project/output/godot-test.mp4
             godot_project/output/godot-test.avi
           if-no-files-found: error
           retention-days: 7
