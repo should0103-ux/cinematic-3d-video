@@ -50,6 +50,10 @@ jobs:
           GLB_COUNT="$(find godot_project/assets -type f -iname '*.glb' | wc -l)"
           test "$GLB_COUNT" -gt 0
           echo "Imported $GLB_COUNT GLB files"
+          curl -fL --retry 4 --retry-all-errors --retry-delay 2 \
+            "https://files.innerscene.com/library/laboratory-researcher-3d-person-healthcare-7a3ceb81/91ad770e07d2be3604e3/professional-lab-researcher.glb" \
+            -o godot_project/assets/researcher.glb
+          test -s godot_project/assets/researcher.glb
 
       - name: Import GLB assets and validate project
         run: |
