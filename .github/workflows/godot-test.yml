@@ -64,7 +64,7 @@ jobs:
           set -euo pipefail
           "$GODOT_BIN" --headless --editor --path godot_project --quit
 
-      - name: Render 5-second portrait test
+      - name: Render 33-second cinematic video
         run: |
           set -euo pipefail
           mkdir -p godot_project/output
@@ -75,12 +75,12 @@ jobs:
             --fixed-fps 30 \
             --write-movie output/godot-final.avi \
             --quit-after 990
-          test -s godot_project/output/godot-test.avi
+          test -s godot_project/output/godot-final.avi
           ffmpeg -hide_banner -y -i godot_project/output/godot-test.avi \
             -an -c:v libx264 -preset medium -crf 20 \
             -pix_fmt yuv420p -movflags +faststart \
             godot_project/output/godot-final.mp4
-          test -s godot_project/output/godot-test.mp4
+          test -s godot_project/output/godot-final.mp4
           ffprobe -v error -show_entries format=duration,size \
             -of default=noprint_wrappers=1 godot_project/output/godot-test.mp4
 
