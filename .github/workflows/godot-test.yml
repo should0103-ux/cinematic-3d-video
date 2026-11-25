@@ -54,6 +54,10 @@ jobs:
             "https://files.innerscene.com/library/laboratory-researcher-3d-person-healthcare-7a3ceb81/91ad770e07d2be3604e3/professional-lab-researcher.glb" \
             -o godot_project/assets/researcher.glb
           test -s godot_project/assets/researcher.glb
+          curl -fL --retry 4 --retry-all-errors --retry-delay 2 \
+            "https://files.innerscene.com/library/ant-5407c615/ab00cc85c25944f9f39c/ant.glb" \
+            -o godot_project/assets/ant.glb
+          test -s godot_project/assets/ant.glb
 
       - name: Import GLB assets and validate project
         run: |
@@ -69,13 +73,13 @@ jobs:
             --rendering-method gl_compatibility \
             --audio-driver Dummy \
             --fixed-fps 30 \
-            --write-movie output/godot-test.avi \
-            --quit-after 150
+            --write-movie output/godot-final.avi \
+            --quit-after 990
           test -s godot_project/output/godot-test.avi
           ffmpeg -hide_banner -y -i godot_project/output/godot-test.avi \
             -an -c:v libx264 -preset medium -crf 20 \
             -pix_fmt yuv420p -movflags +faststart \
-            godot_project/output/godot-test.mp4
+            godot_project/output/godot-final.mp4
           test -s godot_project/output/godot-test.mp4
           ffprobe -v error -show_entries format=duration,size \
             -of default=noprint_wrappers=1 godot_project/output/godot-test.mp4
@@ -83,7 +87,7 @@ jobs:
       - name: Upload Godot test video
         uses: actions/upload-artifact@v4
         with:
-          name: godot-animated-glb-test
+          name: godot-33-second-cinematic-video
           path: |
             godot_project/output/godot-test.mp4
             godot_project/output/godot-test.avi
