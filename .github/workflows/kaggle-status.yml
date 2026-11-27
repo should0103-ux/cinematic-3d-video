@@ -39,6 +39,14 @@ jobs:
           name: straw-refraction-gpu-preview
           path: output_gpu/preview.mp4
           if-no-files-found: ignore
+      - name: Upload Kaggle kernel logs for debugging
+        uses: actions/upload-artifact@v4
+        with:
+          name: kaggle-preview-debug-logs
+          path: |
+            output_gpu/*.log
+            output_cpu/*.log
+          if-no-files-found: ignore
       - name: Upload CPU preview if available
         uses: actions/upload-artifact@v4
         with:
