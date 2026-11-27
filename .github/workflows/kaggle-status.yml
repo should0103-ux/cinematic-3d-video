@@ -73,3 +73,5 @@ jobs:
 # poll corrected embedded CPU notebook
 
 # poll latest render after CPU fallback fix
+
+# query CPU cycles completion
