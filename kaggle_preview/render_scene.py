@@ -3,7 +3,7 @@ from mathutils import Vector
 OUT="/kaggle/working/preview.mp4"; FR="/kaggle/working/frames"; os.makedirs(FR,exist_ok=True)
 bpy.ops.object.select_all(action='SELECT'); bpy.ops.object.delete(use_global=False)
 s=bpy.context.scene; try: s.render.engine='BLENDER_EEVEE_NEXT'
-except TypeError: s.render.engine='BLENDER_EEVEE'; s.render.resolution_x=360; s.render.resolution_y=640; s.render.resolution_percentage=100; s.render.fps=12; s.frame_end=360; s.world.color=(.012,.018,.04); s.view_settings.view_transform='Standard'
+except TypeError: s.render.engine='BLENDER_EEVEE'; s.render.resolution_x=270; s.render.resolution_y=480; s.render.resolution_percentage=100; s.render.fps=6; s.frame_end=180; s.world.color=(.012,.018,.04); s.view_settings.view_transform='Standard'
 def material(n,c,metal=0,rough=.35):
  m=bpy.data.materials.new(n); m.diffuse_color=(*c,1); m.use_nodes=True; p=m.node_tree.nodes.get('Principled BSDF'); p.inputs['Base Color'].default_value=(*c,1); p.inputs['Metallic'].default_value=metal; p.inputs['Roughness'].default_value=rough; return m
 blue=material('Deep blue',(.015,.04,.12)); aqua=material('Water',(.025,.3,.65),.1,.2); orange=material('Straw orange',(1,.22,.025),.05,.25); ivory=material('Caption white',(.95,.98,1)); gold=material('Light ray',(1,.7,.08))
@@ -28,12 +28,12 @@ items=[]
 for start,end,body,size in captions:
  c=bpy.data.curves.new('Caption','FONT'); c.body=body; c.size=size; c.align_x='CENTER'; c.extrude=.001
  o=bpy.data.objects.new(body,c); s.collection.objects.link(o); o.location=(0,-1.55,4.35); o.rotation_euler=(math.radians(90),0,0); o.data.materials.append(ivory); items.append((start,end,o))
-for f in range(1,361):
- t=(f-1)/12
+for f in range(1,181):
+ t=(f-1)/6
  for start,end,o in items: o.hide_render=not(start<=t<end)
  cam.location=(3.8-.5*t/30,-9+.8*t/30,4.0); cam.rotation_euler=(Vector((0,0,1.1))-cam.location).to_track_quat('-Z','Y').to_euler()
  s.frame_set(f); s.render.filepath=f'{FR}/f_{f:04d}.png'; bpy.ops.render.render(write_still=True)
-subprocess.run('ffmpeg -y -framerate 12 -i /kaggle/working/frames/f_%04d.png -c:v libx264 -pix_fmt yuv420p -crf 27 -preset ultrafast /kaggle/working/silent.mp4',shell=True,check=True)
+subprocess.run('ffmpeg -y -framerate 6 -i /kaggle/working/frames/f_%04d.png -c:v libx264 -pix_fmt yuv420p -crf 27 -preset ultrafast /kaggle/working/silent.mp4',shell=True,check=True)
 narration="Have you ever put a straw in a glass and watched it look broken? The straw is perfectly straight. Light from the underwater part changes direction as it leaves water and enters air. That is called refraction. Your eyes trace the light back in a straight line, so the submerged part seems shifted. The same trick makes a swimming pool look shallower than it really is. So next time your straw looks snapped, do not blame the glass. It is light taking a turn."
 subprocess.run(['espeak-ng','-s','145','-w','/kaggle/working/voice.wav',narration],check=True)
 subprocess.run('ffmpeg -y -i /kaggle/working/silent.mp4 -i /kaggle/working/voice.wav -filter_complex "[1:a]apad,atrim=0:30[a]" -map 0:v -map "[a]" -t 30 -c:v copy -c:a aac -b:a 96k -shortest '+OUT,shell=True,check=True)
