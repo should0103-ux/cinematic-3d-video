@@ -101,3 +101,5 @@ jobs:
 # poll latest transparent-glass fast kernel
 
 # monitor captioned preview render
+
+# check caption panel render completion
