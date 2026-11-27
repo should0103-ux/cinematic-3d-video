@@ -91,3 +91,5 @@ jobs:
 # status update after CPU render wait
 
 # poll fast preview status and output
+
+# check fast preview completion and artifact
