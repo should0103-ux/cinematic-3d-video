@@ -51,3 +51,5 @@ jobs:
 # refresh CPU/GPU render status
 
 # scheduled/manual refresh
+
+# poll for completed preview artifact
