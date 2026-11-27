@@ -1,0 +1,10 @@
+{
+  "id": "should01/straw-refraction-cpu-preview",
+  "title": "Straw Refraction CPU Preview",
+  "code_file": "straw-refraction-cpu-preview.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": true,
+  "enable_gpu": false,
+  "enable_internet": true
+}
