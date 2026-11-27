@@ -51,10 +51,11 @@ for loc,power,size in [((3,-4,6),1000,4),((-4,-2,3),700,3),((0,3,4),900,3)]:
  bpy.ops.object.light_add(type='AREA',location=loc); l=bpy.context.object; l.data.energy=power; l.data.shape='DISK'; l.data.size=size; l.rotation_euler=(Vector((0,0,1))-l.location).to_track_quat('-Z','Y').to_euler()
 # Captions are parented to the camera so they remain in-frame
 captions=[(0,3.5,'WHY DOES A STRAW LOOK BROKEN?',.115),(3.5,7,'THE STRAW IS STRAIGHT',.14),(7,12,'LIGHT BENDS AT WATER',.14),(12,17,'THAT IS REFRACTION',.15),(17,22,'YOUR EYES TRACE LIGHT BACK',.12),(22,26,'THE UNDERWATER PART SHIFTS',.11),(26,30,'LIGHT TAKES A TURN!',.17)]
+panel=cube('Caption backing',(0,0,0),(2.55,.38,.025),navy,0); panel.parent=cam; panel.location=(0,1.05,-3.2); panel.rotation_euler=(0,0,0)
 items=[]
 for start,end,body,size in captions:
  cu=bpy.data.curves.new('Caption','FONT'); cu.body=body; cu.size=size; cu.align_x='CENTER'; cu.extrude=.001
- ob=bpy.data.objects.new(body,cu); s.collection.objects.link(ob); ob.parent=cam; ob.location=(0,1.72,-3.1); ob.rotation_euler=(0,0,0); ob.data.materials.append(ivory); items.append((start,end,ob))
+ ob=bpy.data.objects.new(body,cu); s.collection.objects.link(ob); ob.parent=cam; ob.location=(0,1.05,-3.1); ob.rotation_euler=(0,0,0); ob.data.materials.append(ivory); items.append((start,end,ob))
 for f in range(1,121):
  t=(f-1)/4
  for start,end,ob in items: ob.hide_render=not(start<=t<end)
