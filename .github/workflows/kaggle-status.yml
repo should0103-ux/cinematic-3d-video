@@ -71,3 +71,5 @@ jobs:
 # check current CPU render status
 
 # poll corrected embedded CPU notebook
+
+# poll latest render after CPU fallback fix
