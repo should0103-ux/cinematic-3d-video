@@ -69,3 +69,5 @@ jobs:
 # poll latest CPU cycles render
 
 # check current CPU render status
+
+# poll corrected embedded CPU notebook
