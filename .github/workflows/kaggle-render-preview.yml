@@ -17,20 +17,35 @@ jobs:
         with:
           python-version: "3.11"
       - name: Install Kaggle CLI
-        run: python -m pip install --upgrade kaggle six
-      - name: Configure Kaggle token
+        run: python -m pip install --upgrade kaggle six requests
+      - name: Resolve Kaggle username from token securely
         env:
-          KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
           KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
         run: |
-          mkdir -p ~/.kaggle
-          printf '{"username":"%s","key":"%s"}' "$KAGGLE_USERNAME" "$KAGGLE_API_TOKEN" > ~/.kaggle/kaggle.json
-          chmod 600 ~/.kaggle/kaggle.json
+          python - <<'PY'
+          import os, requests, json
+          token=os.environ["KAGGLE_API_TOKEN"]
+          r=requests.post("https://www.kaggle.com/api/v1/oauth2/introspect", data={"token":token}, timeout=30)
+          r.raise_for_status()
+          info=r.json()
+          if not info.get("active") or not info.get("username"):
+              raise SystemExit("Kaggle token introspection did not return an active username.")
+          user=info["username"]
+          print("Authenticated Kaggle user:", user)
+          with open(os.environ["GITHUB_ENV"],"a") as f: f.write("KAGGLE_USERNAME="+user+"\\n")
+          p="kaggle_preview/kernel-metadata.json"
+          meta=json.load(open(p))
+          meta["id"]=user+"/straw-refraction-preview"
+          json.dump(meta,open(p,"w"),indent=2)
+          PY
       - name: Push notebook to Kaggle and start execution
+        env:
+          KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
         run: kaggle kernels push -p kaggle_preview
       - name: Wait for Kaggle notebook completion
         env:
-          SLUG: ${{ secrets.KAGGLE_USERNAME }}/straw-refraction-preview
+          KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+          SLUG: ${{ env.KAGGLE_USERNAME }}/straw-refraction-preview
         run: |
           for i in $(seq 1 180); do
             STATUS=$(kaggle kernels status "$SLUG" 2>&1 || true)
