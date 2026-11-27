@@ -67,3 +67,5 @@ jobs:
 # check preview completion once more
 
 # poll latest CPU cycles render
+
+# check current CPU render status
