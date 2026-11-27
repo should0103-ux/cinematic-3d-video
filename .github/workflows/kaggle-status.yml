@@ -1,6 +1,8 @@
 name: Check Kaggle preview status
 on:
   workflow_dispatch:
+  schedule:
+    - cron: "*/5 * * * *"
   push:
     paths:
       - ".github/workflows/kaggle-status.yml"
