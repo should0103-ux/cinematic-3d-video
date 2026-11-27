@@ -65,3 +65,5 @@ jobs:
 # monitor active CPU cycles and GPU renders
 
 # check preview completion once more
+
+# poll latest CPU cycles render
