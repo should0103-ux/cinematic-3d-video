@@ -17,7 +17,7 @@ jobs:
           python-version: "3.11"
       - name: Install Kaggle CLI
         run: python -m pip install --upgrade kaggle six requests
-      - name: Query notebook status and retrieve output if finished
+      - name: Check GPU and CPU notebook statuses; download completed output
         env:
           KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
         run: |
@@ -29,14 +29,19 @@ jobs:
           print(d["username"])
           PY
           )
-          echo "Kaggle user resolved."
           kaggle kernels status "$KAGGLE_USER/straw-refraction-preview"
-          kaggle kernels output "$KAGGLE_USER/straw-refraction-preview" -p output || true
-      - name: Upload rendered MP4 if available
+          kaggle kernels output "$KAGGLE_USER/straw-refraction-preview" -p output_gpu || true
+          kaggle kernels status "$KAGGLE_USER/straw-refraction-cpu-preview"
+          kaggle kernels output "$KAGGLE_USER/straw-refraction-cpu-preview" -p output_cpu || true
+      - name: Upload GPU preview if available
         uses: actions/upload-artifact@v4
         with:
-          name: kaggle-preview-status-output
-          path: output/preview.mp4
+          name: straw-refraction-gpu-preview
+          path: output_gpu/preview.mp4
           if-no-files-found: ignore
-
-# status check refreshed by assistant
+      - name: Upload CPU preview if available
+        uses: actions/upload-artifact@v4
+        with:
+          name: straw-refraction-cpu-preview
+          path: output_cpu/preview.mp4
+          if-no-files-found: ignore
