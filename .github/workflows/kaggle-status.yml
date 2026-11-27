@@ -24,7 +24,7 @@ jobs:
           r=requests.post("https://www.kaggle.com/api/v1/oauth2/introspect",data={"token":os.environ["KAGGLE_API_TOKEN"]},timeout=30)
           r.raise_for_status(); d=r.json()
           if not d.get("active"): raise SystemExit("Kaggle token inactive")
-          with open(os.environ["GITHUB_ENV"],"a") as f: f.write("KAGGLE_USER="+d["username"]+"\\n")
+          with open(os.environ["GITHUB_ENV"],"a") as f: f.write("KAGGLE_USER="+d["username"]+"\n")
           PY
           kaggle kernels status "$KAGGLE_USER/straw-refraction-preview"
           kaggle kernels output "$KAGGLE_USER/straw-refraction-preview" -p output || true
