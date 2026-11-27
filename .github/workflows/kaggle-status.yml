@@ -75,3 +75,5 @@ jobs:
 # poll latest render after CPU fallback fix
 
 # query CPU cycles completion
+
+# check if CPU render produced MP4
