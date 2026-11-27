@@ -63,3 +63,5 @@ jobs:
 # poll for completed preview artifact
 
 # monitor active CPU cycles and GPU renders
+
+# check preview completion once more
