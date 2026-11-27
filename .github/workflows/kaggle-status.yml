@@ -49,3 +49,5 @@ jobs:
 # poll both kernels again
 
 # refresh CPU/GPU render status
+
+# scheduled/manual refresh
