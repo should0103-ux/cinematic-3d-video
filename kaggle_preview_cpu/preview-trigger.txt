@@ -1,0 +1,1 @@
+Clean rerun trigger for corrected CPU Cycles preview: 6 fps, 270x480, 180 frames, denoising disabled.
