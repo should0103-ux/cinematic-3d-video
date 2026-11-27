@@ -45,3 +45,5 @@ jobs:
           name: straw-refraction-cpu-preview
           path: output_cpu/preview.mp4
           if-no-files-found: ignore
+
+# poll both kernels again
