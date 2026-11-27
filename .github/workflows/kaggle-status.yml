@@ -61,3 +61,5 @@ jobs:
 # scheduled/manual refresh
 
 # poll for completed preview artifact
+
+# monitor active CPU cycles and GPU renders
