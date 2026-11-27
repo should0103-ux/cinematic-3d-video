@@ -1,0 +1,10 @@
+{
+  "id": "should0103-ux/straw-refraction-preview",
+  "title": "30s Straw Refraction Preview",
+  "code_file": "straw-refraction-preview.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": true,
+  "enable_gpu": true,
+  "enable_internet": true
+}
