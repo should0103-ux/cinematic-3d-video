@@ -1,0 +1,63 @@
+name: Kaggle fast CPU preview
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "kaggle_preview_fast/**"
+      - ".github/workflows/kaggle-fast-preview.yml"
+permissions:
+  contents: read
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install Kaggle CLI
+        run: python -m pip install --upgrade kaggle six requests
+      - name: Resolve Kaggle username and push fast preview
+        env:
+          KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+        run: |
+          USERNAME=$(python - <<'PY'
+          import os,requests
+          r=requests.post("https://www.kaggle.com/api/v1/oauth2/introspect",data={"token":os.environ["KAGGLE_API_TOKEN"]},timeout=30)
+          r.raise_for_status(); d=r.json()
+          if not d.get("active"): raise SystemExit("Kaggle token inactive")
+          print(d["username"])
+          PY
+          )
+          python - "$USERNAME" <<'PY'
+          import json,sys
+          p="kaggle_preview_fast/kernel-metadata.json"
+          d=json.load(open(p)); d["id"]=sys.argv[1]+"/straw-refraction-fast-preview"; json.dump(d,open(p,"w"),indent=2)
+          PY
+          kaggle kernels push -p kaggle_preview_fast
+      - name: Wait for fast preview and retrieve MP4
+        env:
+          KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+        run: |
+          USERNAME=$(python - <<'PY'
+          import os,requests
+          r=requests.post("https://www.kaggle.com/api/v1/oauth2/introspect",data={"token":os.environ["KAGGLE_API_TOKEN"]},timeout=30)
+          r.raise_for_status(); print(r.json()["username"])
+          PY
+          )
+          SLUG="$USERNAME/straw-refraction-fast-preview"
+          for i in $(seq 1 180); do
+            STATUS=$(kaggle kernels status "$SLUG" 2>&1 || true)
+            echo "$STATUS"
+            echo "$STATUS" | grep -Eiq "complete|finished" && break
+            echo "$STATUS" | grep -Eiq "error|failed" && exit 1
+            sleep 120
+          done
+          kaggle kernels output "$SLUG" -p output
+      - name: Upload fast preview MP4
+        uses: actions/upload-artifact@v4
+        with:
+          name: straw-refraction-fast-preview
+          path: output/preview.mp4
+          if-no-files-found: error
