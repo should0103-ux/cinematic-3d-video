@@ -2,7 +2,7 @@ import bpy, math, os, subprocess
 from mathutils import Vector
 OUT="/kaggle/working/preview.mp4"; FR="/kaggle/working/frames"; os.makedirs(FR,exist_ok=True)
 bpy.ops.object.select_all(action='SELECT'); bpy.ops.object.delete(use_global=False)
-s=bpy.context.scene; s.render.engine='CYCLES'; s.cycles.device='CPU'; s.cycles.samples=8; s.cycles.use_denoising=True; s.render.resolution_x=270; s.render.resolution_y=480; s.render.resolution_percentage=100; s.render.fps=6; s.frame_end=180; s.world.color=(.012,.018,.04); s.view_settings.view_transform='Standard'
+s=bpy.context.scene; s.render.engine='CYCLES'; s.cycles.device='CPU'; s.cycles.samples=8; s.cycles.use_denoising=False; s.render.resolution_x=270; s.render.resolution_y=480; s.render.resolution_percentage=100; s.render.fps=6; s.frame_end=180; s.world.color=(.012,.018,.04); s.view_settings.view_transform='Standard'
 def material(n,c,metal=0,rough=.35):
  m=bpy.data.materials.new(n); m.diffuse_color=(*c,1); m.use_nodes=True; p=m.node_tree.nodes.get('Principled BSDF'); p.inputs['Base Color'].default_value=(*c,1); p.inputs['Metallic'].default_value=metal; p.inputs['Roughness'].default_value=rough; return m
 blue=material('Deep blue',(.015,.04,.12)); aqua=material('Water',(.025,.3,.65),.1,.2); orange=material('Straw orange',(1,.22,.025),.05,.25); ivory=material('Caption white',(.95,.98,1)); gold=material('Light ray',(1,.7,.08))
