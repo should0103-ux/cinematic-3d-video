@@ -1,0 +1,24 @@
+name: Search Kaggle for Zack skill assets
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/kaggle-find-zack-assets.yml"
+permissions:
+  contents: read
+jobs:
+  search:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python -m pip install --upgrade kaggle six
+      - name: Search datasets and kernels
+        env:
+          KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+        run: |
+          kaggle datasets list -s "zack blender" -v | head -60
+          kaggle datasets list -s "blender skill pack" -v | head -60
+          kaggle kernels list -s "zack blender" -v | head -40
