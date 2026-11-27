@@ -47,3 +47,5 @@ jobs:
           if-no-files-found: ignore
 
 # poll both kernels again
+
+# refresh CPU/GPU render status
