@@ -32,7 +32,7 @@ jobs:
               raise SystemExit("Kaggle token introspection did not return an active username.")
           user=info["username"]
           print("Authenticated Kaggle user:", user)
-          with open(os.environ["GITHUB_ENV"],"a") as f: f.write("KAGGLE_USERNAME="+user+"\\n")
+          with open(os.environ["GITHUB_ENV"],"a") as f: f.write("KAGGLE_USERNAME="+user+"\n")
           p="kaggle_preview/kernel-metadata.json"
           meta=json.load(open(p))
           meta["id"]=user+"/straw-refraction-preview"
